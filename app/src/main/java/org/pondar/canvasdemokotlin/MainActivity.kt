@@ -15,7 +15,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private var gameTimer: Timer = Timer()
-    var timeLeft: Int = 60
+    private var timeLeft: Int = 120
     var timerTicks: Int = 0
     lateinit var binding : ActivityMainBinding
     private lateinit var game: Game
@@ -103,6 +103,8 @@ class MainActivity : AppCompatActivity() {
 
                 timeLeft--
                 binding.timeView.text = "Time: $timeLeft"
+
+                game.ghostsChangeDirection()
             }
 
             if (timeLeft == 0) {
@@ -114,7 +116,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             //We handle direction in the Game class
-            game.movePacman(8)
+            game.movePacman(game.pacmanSpeed)
+            game.moveAllGhosts()
         }
     }
 }

@@ -58,11 +58,17 @@ class GameView : View {
 
         if (!(game.coinsInitialized))
             game.initializeGoldCoins()
+        if (!(game.ghostsInitialized))
+            game.initializeGhosts()
 
         for (coin in game.coins) {
             if (!coin.taken) {
                 canvas.drawBitmap(game.coinBitmap, coin.x.toFloat(), coin.y.toFloat(), paint)
             }
+        }
+
+        for (ghost in game.ghosts) {
+            canvas.drawBitmap(ghost.sprite, ghost.x.toFloat(), ghost.y.toFloat(), paint)
         }
 
         canvas.drawBitmap(game.pacmanBitmap, game.pacx.toFloat(), game.pacy.toFloat(), paint)

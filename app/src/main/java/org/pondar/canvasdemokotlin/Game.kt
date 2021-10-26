@@ -2,21 +2,24 @@ package org.pondar.canvasdemokotlin
 
 import android.widget.TextView
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import kotlin.math.*
 import java.util.*
 
 class Game(private var context: Context, pointsView: TextView, levelView: TextView) {
-    var pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
-    var pacmanHeight: Int = 32
-    var coinBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.coin)
-
     var running = false
 
+    var pacmanBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
+    var pacmanSize: Int = 32
+    var pacmanSpeed: Int = 16
     //The coordinates for our dear pacman: (0,0) is the top-left corner
     var pacx = 0
     var pacy = 0
     var pacCurrDirection = Direction.RIGHT
+
+    var ghostSpeed: Int = 8
+    var ghostSize: Int = 32
 
     private var currLevel: Int = 1
     private var levelView: TextView = levelView
@@ -26,6 +29,11 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     private var controlsWidth: Int = 400
     private lateinit var gameView: GameView
 
+    var ghostsInitialized = false
+    var ghosts = ArrayList<Ghost>()
+    var ghostsToCreate = 2
+
+    var coinBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.coin)
     var coinsInitialized = false
     var coins = ArrayList<GoldCoin>()
     private var coinsToCreate = 10
@@ -37,8 +45,8 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     fun initializeGoldCoins() {
         //Initialize gold coins
         for (i in 1..coinsToCreate) {
-            var randomX = (32..(gameView.w-pacmanHeight-controlsWidth)).random()
-            var randomY = (32..(gameView.h-pacmanHeight)).random()
+            val randomX = (32..(gameView.w-pacmanSize-controlsWidth)).random()
+            val randomY = (32..(gameView.h-pacmanSize)).random()
             coins.add(
                 GoldCoin(
                     randomX,
@@ -48,6 +56,31 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
             )
         }
         coinsInitialized = true
+    }
+
+    fun initializeGhosts() {
+        //Initialize ghosts
+        //Random number based on the amount of colors we have
+        val randomNumber: Int = (GhostColor.values().indices).random()
+        val ghostColor = GhostColor.values()[randomNumber]
+        for (i in 1..ghostsToCreate) {
+            ghosts.add(
+                Ghost(
+                    //Far right
+                    gameView.w - ghostSize - controlsWidth,
+                    //Bottom
+                    gameView.h - ghostSize,
+                    ghostColor,
+                    Direction.UP,
+                    //We'll just default to a red sprite pointing up when we initialize.
+                    //This could be done better, but I can't come up with a nice way to do it
+                    //by direction and color
+                    BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_up)
+                )
+            )
+        }
+
+        ghostsInitialized = true
     }
 
     fun newGame() {
@@ -77,8 +110,10 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         coinsToCreate += 10
         coinsInitialized = false
         currLevel++
-
         updateLevelText()
+
+        //Speed up ghosts
+        ghostSpeed += 4
 
         //Invalidate game view so everything updates
         gameView.invalidate()
@@ -94,9 +129,9 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         }
     }
 
-    fun moveUp(y: Int) {
+    private fun moveUp(y: Int) {
         //still within our boundaries?
-        if (pacy - y + pacmanHeight > pacmanHeight - y) {
+        if (pacy - y + pacmanSize > pacmanSize - y) {
             pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_up)
             pacy -= y
             pacCurrDirection = Direction.UP
@@ -105,9 +140,9 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         }
     }
 
-    fun moveRight(x: Int) {
+    private fun moveRight(x: Int) {
         //still within our boundaries?
-        if (pacx + x + pacmanHeight < gameView.w - controlsWidth - pacmanHeight - x) {
+        if (pacx + x + pacmanSize < gameView.w - controlsWidth - pacmanSize - x) {
             pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
             pacx += x
             pacCurrDirection = Direction.RIGHT
@@ -116,9 +151,9 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         }
     }
 
-    fun moveDown(y: Int) {
+    private fun moveDown(y: Int) {
         //still within our boundaries?
-        if (pacy + y + pacmanHeight < gameView.h - pacmanHeight - y) {
+        if (pacy + y + pacmanSize < gameView.h - pacmanSize - y) {
             pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_down)
             pacy += y
             pacCurrDirection = Direction.DOWN
@@ -127,9 +162,9 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         }
     }
 
-    fun moveLeft(x: Int) {
+    private fun moveLeft(x: Int) {
         //still within our boundaries?
-        if (pacx - x + pacmanHeight > pacmanHeight - x) {
+        if (pacx - x + pacmanSize > pacmanSize - x) {
             pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_left)
             pacx -= x
             pacCurrDirection = Direction.LEFT
@@ -141,15 +176,19 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
 
     private fun doCollisionCheck() {
         for (coin in coins) {
-            if (!coin.taken && distance(pacx, pacy, coin.x, coin.y) < (pacmanHeight*2.5)){
+            if (!coin.taken && distance(pacx, pacy, coin.x, coin.y) < (pacmanSize*2.5)){
                 coin.taken = true
                 points += 10
                 updatePointsText()
             }
         }
 
-        if (coins.all { coin -> coin.taken })
+        if (coins.all { coin -> coin.taken }) {
             startNextLevel()
+        }
+
+        //TODO: ghost collision
+
     }
 
     private fun distance(x1: Int, y1: Int, x2: Int, y2: Int): Double {
@@ -158,6 +197,88 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         )
     }
     //endregion
+
+    //region $Ghost movement
+    private fun moveGhost(ghost: Ghost, distanceToMove: Int, changeDirection: Boolean) {
+        if (changeDirection) {
+            //Random ghost movement
+            val randomDirection: Int = (0..3).random()
+            val newGhostDirection: Direction = Direction.values()[randomDirection]
+            //above is a cleaner way of doing what is below here
+            /*var newGhostDirection: Direction = when(randomDirection) {
+            0 -> Direction.UP
+            1 -> Direction.RIGHT
+            2 -> Direction.DOWN
+            3 -> Direction.LEFT
+            else -> ghost.currDirection
+        }*/
+            ghost.currDirection = newGhostDirection
+            ghost.sprite = changeGhostSprite(ghost)
+        }
+
+        when(ghost.currDirection) {
+            Direction.UP -> {
+                if (ghost.y - distanceToMove + ghostSize > ghostSize - distanceToMove) {
+                    ghost.y -= distanceToMove
+                }
+            }
+            Direction.RIGHT -> {
+                if (ghost.x + distanceToMove + ghostSize < gameView.w - controlsWidth - ghostSize - distanceToMove) {
+                    ghost.x += distanceToMove
+                }
+            }
+            Direction.DOWN -> {
+                if (ghost.y + distanceToMove + ghostSize < gameView.h - controlsWidth - ghostSize - distanceToMove) {
+                    ghost.y += distanceToMove
+                }
+            }
+            Direction.LEFT -> {
+                if (ghost.x - distanceToMove + ghostSize > ghostSize - distanceToMove) {
+                    ghost.x -= distanceToMove
+                }
+            }
+        }
+
+        gameView.invalidate()
+    }
+
+    fun moveAllGhosts() {
+        for (ghost in ghosts) {
+            moveGhost(ghost, ghostSpeed, false)
+        }
+    }
+
+    fun ghostsChangeDirection() {
+        for (ghost in ghosts) {
+            moveGhost(ghost, ghostSpeed, true)
+        }
+    }
+    //endregion
+
+    private fun changeGhostSprite(ghost: Ghost): Bitmap {
+        //Could expand to more colors, but keeping it to 2 for now :)
+        var ghostSprite = ghost.sprite
+        when(ghost.ghostColor) {
+            GhostColor.RED -> {
+                ghostSprite = when(ghost.currDirection){
+                    Direction.UP -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_up)
+                    Direction.RIGHT -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_right)
+                    Direction.DOWN -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_down)
+                    Direction.LEFT -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_left)
+                }
+            }
+            GhostColor.TEAL -> {
+                ghostSprite = when(ghost.currDirection){
+                    Direction.UP -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_teal_up)
+                    Direction.RIGHT -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_teal_right)
+                    Direction.DOWN -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_teal_down)
+                    Direction.LEFT -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_teal_left)
+                }
+            }
+        }
+
+        return ghostSprite
+    }
 
     private fun updatePointsText() {
         pointsView.text = "Points: $points"
