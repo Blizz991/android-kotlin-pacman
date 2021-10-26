@@ -60,7 +60,9 @@ class GameView : View {
             game.initializeGoldCoins()
 
         for (coin in game.coins) {
-            canvas.drawBitmap(game.coinBitmap, coin.x.toFloat(), coin.y.toFloat(), paint)
+            if (!coin.taken) {
+                canvas.drawBitmap(game.coinBitmap, coin.x.toFloat(), coin.y.toFloat(), paint)
+            }
         }
 
         canvas.drawBitmap(game.pacmanBitmap, game.pacx.toFloat(), game.pacy.toFloat(), paint)

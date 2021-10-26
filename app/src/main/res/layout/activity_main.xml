@@ -24,7 +24,7 @@
             android:layout_width="144dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="@string/points"
+            android:text="Points: 0"
             android:textAlignment="center"
             android:textSize="22sp" />
 

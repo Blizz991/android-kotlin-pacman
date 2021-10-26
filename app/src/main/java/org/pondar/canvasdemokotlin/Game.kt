@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.View
+import kotlin.math.*
 import java.util.*
 
 class Game(private var context: Context, view: TextView) {
@@ -15,7 +16,7 @@ class Game(private var context: Context, view: TextView) {
     //The coordinates for our dear pacman: (0,0) is the top-left corner
     var pacx = 0
     var pacy = 0
-    private var pointsView: View = view
+    private var pointsView: TextView = view
     private var points: Int = 0
     private var controlsWidth: Int = 400
     private lateinit var gameView: GameView
@@ -91,7 +92,25 @@ class Game(private var context: Context, view: TextView) {
         }
     }
 
-    fun doCollisionCheck() {
+    private fun doCollisionCheck() {
+        for (coin in coins) {
+            if (!coin.taken && distance(pacx, pacy, coin.x, coin.y) < (pacmanHeight*2.5)){
+                coin.taken = true
+                points += 10
+                updatePoints()
+            }
+        }
+    }
 
+    private fun distance(x1: Int, y1: Int, x2: Int, y2: Int) : Double {
+        val distance = sqrt(
+            (x2.toDouble() - x1.toDouble()).pow(2) + (y2.toDouble() - y1.toDouble()).pow(2)
+        )
+
+        return distance
+    }
+
+    private fun updatePoints() {
+        pointsView.text = "Points: $points"
     }
 }
