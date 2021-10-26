@@ -14,6 +14,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     //The coordinates for our dear pacman: (0,0) is the top-left corner
     var pacx = 0
     var pacy = 0
+    var pacCurrDirection = Direction.RIGHT
     private var currLevel: Int = 1
     private var levelView: TextView = levelView
 
@@ -83,6 +84,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         if (pacy - y + pacmanHeight > pacmanHeight - y) {
             pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_up)
             pacy -= y
+            pacCurrDirection = Direction.UP
             doCollisionCheck()
             gameView.invalidate() //redraw everything - this ensures onDraw() is called.
         }
@@ -93,6 +95,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         if (pacx + x + pacmanHeight < gameView.w - controlsWidth - pacmanHeight - x) {
             pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
             pacx += x
+            pacCurrDirection = Direction.RIGHT
             doCollisionCheck()
             gameView.invalidate() //redraw everything - this ensures onDraw() is called.
         }
@@ -103,6 +106,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         if (pacy + y + pacmanHeight < gameView.h - pacmanHeight - y) {
             pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_down)
             pacy += y
+            pacCurrDirection = Direction.DOWN
             doCollisionCheck()
             gameView.invalidate() //redraw everything - this ensures onDraw() is called.
         }
@@ -113,6 +117,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         if (pacx - x + pacmanHeight > pacmanHeight - x) {
             pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_left)
             pacx -= x
+            pacCurrDirection = Direction.LEFT
             doCollisionCheck()
             gameView.invalidate() //redraw everything - this ensures onDraw() is called.
         }
