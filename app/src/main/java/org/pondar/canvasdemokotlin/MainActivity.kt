@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     var timerTicks: Int = 0
     lateinit var binding : ActivityMainBinding
     private lateinit var game: Game
+    private lateinit var toast: Toast
 
     //private val builder = AlertDialog.Builder(this)
 
@@ -39,6 +40,10 @@ class MainActivity : AppCompatActivity() {
         //Couldn't get dialog to work, found it pretty confusing
         //builder.setTitle(R.string.gameOverTitle)?.setMessage("You got: ${game.points} points!")
         //builder.create()
+
+        toast = Toast.makeText( applicationContext,
+            "GAME OVER \nYou got: ${game.points} points!",
+            Toast.LENGTH_LONG)
 
         gameTimer.schedule(object: TimerTask() {
             override fun run() {
@@ -71,6 +76,9 @@ class MainActivity : AppCompatActivity() {
             //Reset pause state
             game.running = true
             binding.pause.text = getString(R.string.pauseBtn)
+
+            //Remove toast if new game is pressed
+            toast.cancel()
 
             //Reset game
             game.newGame()
@@ -112,9 +120,7 @@ class MainActivity : AppCompatActivity() {
             binding.pause.isEnabled = false
 
             //I wanted to use dialog, but couldn't get it to work
-            Toast.makeText( applicationContext,
-                        "You got: ${game.points} points!",
-                            Toast.LENGTH_LONG).show()
+            toast.show()
         }
 
         if (game.running) {
