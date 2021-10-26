@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private var gameTimer: Timer = Timer()
     //private var timeLeft: Int = 0
-    private var timeSpent: Int = 0
+    var timeSpent: Int = 0
     var timerTicks: Int = 0
     lateinit var binding : ActivityMainBinding
     private lateinit var game: Game
@@ -68,6 +68,10 @@ class MainActivity : AppCompatActivity() {
             //Reenable pause button (gets disabled when you run out of time)
             binding.pause.isEnabled = true
 
+            //Reset pause state
+            game.running = true
+            binding.pause.text = getString(R.string.pauseBtn)
+
             //Reset game
             game.newGame()
         }
@@ -98,6 +102,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val timerTick = Runnable {
+        if(game.gameOver) {
+            game.running = false
+            binding.pause.isEnabled = false
+
+            //I wanted to use dialog, but couldn't get it to work
+            Toast.makeText(applicationContext, "You got: ${game.points} points!", Toast.LENGTH_LONG).show()
+        }
+
         if (game.running) {
             timerTicks+= 50
 

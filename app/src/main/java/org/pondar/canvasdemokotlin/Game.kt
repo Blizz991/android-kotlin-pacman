@@ -10,6 +10,7 @@ import kotlin.collections.ArrayList
 
 class Game(private var context: Context, pointsView: TextView, levelView: TextView) {
     var running = false
+    var gameOver = false
 
     var pacmanBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
     var pacmanSize: Int = 32
@@ -183,7 +184,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         for (coin in coins) {
             if (!coin.taken && distance(pacx, pacy, coin.x, coin.y) < (pacmanSize*2.5)){
                 coin.taken = true
-                points += 10
+                points += 1*currLevel
                 updatePointsText()
             }
         }
@@ -192,8 +193,12 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
             startNextLevel()
         }
 
-        //TODO: ghost collision
-
+        for(ghost in ghosts) {
+            if (distance(pacx, pacy, ghost.x, ghost.y) < (pacmanSize*1.5)) {
+                running = false
+                gameOver = true
+            }
+        }
     }
 
     private fun distance(x1: Int, y1: Int, x2: Int, y2: Int): Double {
