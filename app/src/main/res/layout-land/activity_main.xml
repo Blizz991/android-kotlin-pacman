@@ -48,7 +48,7 @@
             android:id="@+id/timeView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Time: 60"
+            android:text="Time: 00:00"
             android:textAlignment="center"
             android:textSize="22sp" />
 
