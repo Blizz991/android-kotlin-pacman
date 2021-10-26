@@ -2,9 +2,7 @@ package org.pondar.canvasdemokotlin
 
 import android.widget.TextView
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.view.View
 import kotlin.math.*
 import java.util.*
 
@@ -102,12 +100,10 @@ class Game(private var context: Context, view: TextView) {
         }
     }
 
-    private fun distance(x1: Int, y1: Int, x2: Int, y2: Int) : Double {
-        val distance = sqrt(
+    private fun distance(x1: Int, y1: Int, x2: Int, y2: Int): Double {
+        return sqrt(
             (x2.toDouble() - x1.toDouble()).pow(2) + (y2.toDouble() - y1.toDouble()).pow(2)
         )
-
-        return distance
     }
 
     private fun updatePoints() {
