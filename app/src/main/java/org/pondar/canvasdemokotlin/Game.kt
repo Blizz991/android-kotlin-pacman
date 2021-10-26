@@ -4,10 +4,11 @@ import android.widget.TextView
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import java.lang.IllegalArgumentException
 import kotlin.math.*
 import kotlin.collections.ArrayList
 
-class Game(private var context: Context, pointsView: TextView, levelView: TextView) {
+open class Game(private var context: Context, pointsView: TextView, levelView: TextView) {
     var running = false
     var gameOver = false
     private var currLevel: Int = 1
@@ -226,12 +227,12 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
             val newGhostDirection: Direction = Direction.values()[randomDirection]
             //above is a cleaner way of doing what is below here
             /*var newGhostDirection: Direction = when(randomDirection) {
-            0 -> Direction.UP
-            1 -> Direction.RIGHT
-            2 -> Direction.DOWN
-            3 -> Direction.LEFT
-            else -> ghost.currDirection
-        }*/
+                0 -> Direction.UP
+                1 -> Direction.RIGHT
+                2 -> Direction.DOWN
+                3 -> Direction.LEFT
+                else -> ghost.currDirection
+            }*/
             ghost.currDirection = newGhostDirection
             ghost.sprite = getGhostSprite(ghost.currDirection, ghost.ghostColor)
         }
@@ -258,6 +259,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
                 }
             }
         }
+
         doCollisionCheck(true)
         gameView.invalidate()
     }
@@ -278,8 +280,15 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         //Default to red pointing up in case something goes wrong
         var ghostSprite = BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_up)
 
+        val resourceName = "ghost_${ghostColor.name.lowercase()}_${direction.name.lowercase()}"
+        getResourceID(resourceName,"drawable", context)
+
+        ghostSprite = BitmapFactory.decodeResource(context.resources, getResourceID(resourceName,"drawable", context))
+        //BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_up)
+
         //Could expand to more colors, but keeping it to 2 for now :)
-        when(ghostColor) {
+        //Legacy: I figured out how to use string names to get resource files (see above) :D
+        /*when(ghostColor) {
             GhostColor.RED -> {
                 ghostSprite = when(direction){
                     Direction.UP -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_up)
@@ -296,7 +305,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
                     Direction.LEFT -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_teal_left)
                 }
             }
-        }
+        }*/
 
         return ghostSprite
     }
@@ -308,5 +317,19 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
 
     private fun updateLevelText() {
         levelView.text = "Level: $currLevel"
+    }
+
+    protected fun getResourceID(resName: String, resType: String?, ctx: Context): Int {
+        val resourceID = ctx.resources.getIdentifier(
+            resName, resType,
+            ctx.applicationInfo.packageName
+        )
+        return if (resourceID == 0) {
+            throw IllegalArgumentException(
+                "No resource string found with name $resName"
+            )
+        } else {
+            resourceID
+        }
     }
 }

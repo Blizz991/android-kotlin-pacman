@@ -44,6 +44,7 @@
             android:backgroundTint="#DF8602"
             android:text="@string/pauseBtn"
             android:textColor="#FFFFFF" />
+
         <TextView
             android:id="@+id/timeView"
             android:layout_width="match_parent"
