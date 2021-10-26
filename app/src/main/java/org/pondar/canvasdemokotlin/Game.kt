@@ -55,6 +55,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         pacx = 0
         pacy = 0
         pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
+        pacCurrDirection = Direction.RIGHT
 
         //Update level
         currLevel = 1
@@ -76,12 +77,14 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         coinsToCreate += 10
         coinsInitialized = false
         currLevel++
+
         updateLevelText()
 
         //Invalidate game view so everything updates
         gameView.invalidate()
     }
 
+    //region $Pacman movement
     fun movePacman(distanceToMove: Int) {
         when(pacCurrDirection) {
             Direction.UP -> moveUp(distanceToMove)
@@ -135,6 +138,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         }
     }
 
+
     private fun doCollisionCheck() {
         for (coin in coins) {
             if (!coin.taken && distance(pacx, pacy, coin.x, coin.y) < (pacmanHeight*2.5)){
@@ -153,6 +157,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
             (x2.toDouble() - x1.toDouble()).pow(2) + (y2.toDouble() - y1.toDouble()).pow(2)
         )
     }
+    //endregion
 
     private fun updatePointsText() {
         pointsView.text = "Points: $points"

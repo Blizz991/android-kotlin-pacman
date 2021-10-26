@@ -30,20 +30,27 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/pause"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#DF8602"
-            android:text="@string/pauseBtn"
-            android:textColor="#FFFFFF" />
-
-        <Button
             android:id="@+id/newGameBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#673AB7"
             android:text="@string/newGameBtn"
             android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/pause"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#DF8602"
+            android:text="@string/pauseBtn"
+            android:textColor="#FFFFFF" />
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time: 60"
+            android:textAlignment="center"
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/pointsView"

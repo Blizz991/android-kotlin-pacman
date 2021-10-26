@@ -1,5 +1,7 @@
 package org.pondar.canvasdemokotlin
 
+import android.graphics.Color
+import android.graphics.drawable.ColorStateListDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -10,7 +12,8 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private var myTimer: Timer = Timer()
-    var counter: Int = 0
+    var timeLeft: Int = 60
+    var timerTicks: Int = 0
     lateinit var binding : ActivityMainBinding
     private lateinit var game: Game
 
@@ -33,7 +36,23 @@ class MainActivity : AppCompatActivity() {
         }, 0 , 50)
 
         //adding a click listeners
+
+        binding.pause.setOnClickListener {
+            game.running = !game.running
+            if (game.running) {
+              binding.pause.text = getString(R.string.pauseBtn)
+            } else {
+                binding.pause.text = getString(R.string.unpauseBtn)
+            }
+        }
+
         binding.newGameBtn.setOnClickListener {
+            //Reset timers
+            timeLeft = 60
+            timerTicks = 0
+            binding.timeView.text = "Time: $timeLeft"
+
+            //Reset game
             game.newGame()
         }
 
@@ -64,7 +83,20 @@ class MainActivity : AppCompatActivity() {
 
     private val timerTick = Runnable {
         if (game.running) {
-            counter++
+            timerTicks+= 50
+
+            if (timerTicks == 1000) {
+                //1 second has passed
+                timerTicks = 0
+
+                timeLeft--
+                binding.timeView.text = "Time: $timeLeft"
+            }
+
+            if (timeLeft == 0) {
+                game.running = false
+                //Display dialog with game over
+            }
 
             //We handle direction in the Game class
             game.movePacman(8)
