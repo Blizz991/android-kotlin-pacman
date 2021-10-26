@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">CanvasDemoKotlin</string>
     <string name="points">Points: 0</string>
-    <string name="move">Move</string>
-
+    <string name="moveUp">˄</string>
+    <string name="moveRight">˃</string>
+    <string name="moveDown">˅</string>
+    <string name="moveLeft">˂</string>
 </resources>

@@ -9,21 +9,15 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 
-class MyView : View {
+class GameView : View {
+    private lateinit var game: Game
+    var h: Int = 0
+    var w: Int = 0 //used for storing our height and width
 
-    private var bitmap = BitmapFactory.decodeResource(resources, R.drawable.pacman)
-    //The coordinates for our dear pacman: (0,0) is the top-left corner
-    private var pacx = 50
-    private var pacy = 400
-    private var h: Int = 0
-    private var w: Int = 0 //used for storing our height and width
-
-    fun moveRight(x: Int) {
-        //still within our boundaries?
-        if (pacx + x + bitmap.width < w)
-            pacx = pacx + x
-        invalidate() //redraw everything - this ensures onDraw() is called.
+    fun setGame(game: Game) {
+        this.game = game
     }
 
     /* The next 3 constructors are needed for the Android view system,
@@ -46,23 +40,30 @@ class MyView : View {
         //Making a new paint object
         val paint = Paint()
         //setting the color
-        paint.color = Color.RED
-        paint.strokeWidth = 10.0f
-        canvas.drawColor(Color.WHITE) //clear entire canvas to white color
+        //paint.color = Color.RED
+        //paint.strokeWidth = 10.0f
+        //canvas.drawColor(Color.WHITE) //clear entire canvas to white color
         //drawing a line from (0,0) -> (300,200)
-        canvas.drawLine(0f, 0f, 300f, 200f, paint)
-        paint.color = Color.GREEN
-        canvas.drawLine(0f, 200f, 300f, 0f, paint)
+        //canvas.drawLine(0f, 0f, 300f, 200f, paint)
+        //paint.color = Color.GREEN
+        //canvas.drawLine(0f, 200f, 300f, 0f, paint)
 
 
         //setting the color using the format: Transparency, Red, Green, Blue
-        paint.color = -0xffff67
+        //paint.color = -0xffff67
 
         //drawing a circle with radius 20, and center in (100,100)
-        canvas.drawCircle(100f, 100f, 30f, paint)
+        //canvas.drawCircle(100f, 100f, 30f, paint)
 
 
-        canvas.drawBitmap(bitmap, pacx.toFloat(), pacy.toFloat(), paint)
+        if (!(game.coinsInitialized))
+            game.initializeGoldCoins()
+
+        for (coin in game.coins) {
+            canvas.drawBitmap(game.coinBitmap, coin.x.toFloat(), coin.y.toFloat(), paint)
+        }
+
+        canvas.drawBitmap(game.pacmanBitmap, game.pacx.toFloat(), game.pacy.toFloat(), paint)
         super.onDraw(canvas)
     }
 

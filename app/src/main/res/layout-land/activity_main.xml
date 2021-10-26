@@ -5,17 +5,22 @@
     android:orientation="horizontal"
     tools:context="org.pondar.canvasdemokotlin.MainActivity">
 
-    <org.pondar.canvasdemokotlin.GameView
-        android:id="@+id/gameView"
-        android:layout_width="586dp"
-        android:layout_height="match_parent">
-
-    </org.pondar.canvasdemokotlin.GameView>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toEndOf="@+id/gameView"
+        android:orientation="horizontal">
+
+        <org.pondar.canvasdemokotlin.GameView
+            android:id="@+id/gameView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </org.pondar.canvasdemokotlin.GameView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:gravity="bottom"
         android:orientation="vertical">
 
@@ -111,6 +116,7 @@
             </TableRow>
 
         </TableLayout>
+
     </LinearLayout>
 
     <!-- Notice how the custom view is referenced here with
