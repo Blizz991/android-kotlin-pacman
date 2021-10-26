@@ -5,12 +5,18 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import kotlin.math.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class Game(private var context: Context, pointsView: TextView, levelView: TextView) {
     var running = false
     var gameOver = false
+    private var currLevel: Int = 1
+    private var levelView: TextView = levelView
+
+    private var pointsView: TextView = pointsView
+    var points: Int = 0
+    private var controlsWidth: Int = 400
+    private lateinit var gameView: GameView
 
     var pacmanBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
     var pacmanSize: Int = 32
@@ -20,20 +26,11 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     var pacy = 0
     var pacCurrDirection = Direction.RIGHT
 
-    var ghostSpeed: Int = 4
-    var ghostSize: Int = 32
-
-    private var currLevel: Int = 1
-    private var levelView: TextView = levelView
-
-    private var pointsView: TextView = pointsView
-    var points: Int = 0
-    private var controlsWidth: Int = 400
-    private lateinit var gameView: GameView
-
+    private var ghostSpeed: Int = 4
+    private var ghostSize: Int = 32
+    private var ghostsToCreate = 8
     var ghostsInitialized = false
     var ghosts = ArrayList<Ghost>()
-    var ghostsToCreate = 2
 
     var coinBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.coin)
     var coinsInitialized = false
@@ -62,10 +59,10 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
 
     fun initializeGhosts() {
         //Initialize ghosts
-        //Random number based on the amount of colors we have
-        val randomNumber: Int = (GhostColor.values().indices).random()
-        val ghostColor = GhostColor.values()[randomNumber]
         for (i in 1..ghostsToCreate) {
+            //Random number based on the amount of colors we have
+            val randomNumber: Int = (GhostColor.values().indices).random()
+            val ghostColor = GhostColor.values()[randomNumber]
             ghosts.add(
                 Ghost(
                     //Far right
@@ -74,10 +71,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
                     gameView.h - ghostSize,
                     ghostColor,
                     Direction.UP,
-                    //We'll just default to a red sprite pointing up when we initialize.
-                    //This could be done better, but I can't come up with a nice way to do it
-                    //by direction and color
-                    BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_up)
+                    getGhostSprite(Direction.UP, ghostColor)
                 )
             )
         }
@@ -86,6 +80,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     }
 
     fun newGame() {
+        gameOver = false
         //Reset pacman
         pacx = 0
         pacy = 0
@@ -120,6 +115,19 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
 
         //Speed up ghosts
         ghostSpeed += 4
+        //Add ghost
+        val randomNumber: Int = (GhostColor.values().indices).random()
+        val ghostColor = GhostColor.values()[randomNumber]
+        ghosts.add(
+            Ghost(
+                gameView.w - ghostSize - controlsWidth,
+                //Bottom
+                gameView.h - ghostSize,
+                ghostColor,
+                Direction.UP,
+                getGhostSprite(Direction.UP, ghostColor)
+            )
+        )
 
         //Invalidate game view so everything updates
         gameView.invalidate()
@@ -223,7 +231,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
             else -> ghost.currDirection
         }*/
             ghost.currDirection = newGhostDirection
-            ghost.sprite = changeGhostSprite(ghost)
+            ghost.sprite = getGhostSprite(ghost.currDirection, ghost.ghostColor)
         }
 
         when(ghost.currDirection) {
@@ -263,14 +271,15 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
             moveGhost(ghost, ghostSpeed, true)
         }
     }
-    //endregion
 
-    private fun changeGhostSprite(ghost: Ghost): Bitmap {
+    private fun getGhostSprite(direction: Direction, ghostColor: GhostColor): Bitmap {
+        //Default to red pointing up in case something goes wrong
+        var ghostSprite = BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_up)
+
         //Could expand to more colors, but keeping it to 2 for now :)
-        var ghostSprite = ghost.sprite
-        when(ghost.ghostColor) {
+        when(ghostColor) {
             GhostColor.RED -> {
-                ghostSprite = when(ghost.currDirection){
+                ghostSprite = when(direction){
                     Direction.UP -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_up)
                     Direction.RIGHT -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_right)
                     Direction.DOWN -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red_down)
@@ -278,7 +287,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
                 }
             }
             GhostColor.TEAL -> {
-                ghostSprite = when(ghost.currDirection){
+                ghostSprite = when(direction){
                     Direction.UP -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_teal_up)
                     Direction.RIGHT -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_teal_right)
                     Direction.DOWN -> BitmapFactory.decodeResource(context.resources, R.drawable.ghost_teal_down)
@@ -289,6 +298,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
 
         return ghostSprite
     }
+    //endregion
 
     private fun updatePointsText() {
         pointsView.text = "Points: $points"

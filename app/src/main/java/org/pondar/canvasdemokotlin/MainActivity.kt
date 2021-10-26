@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             timeSpent = 0
             timerTicks = 0
             //binding.timeView.text = "Time: $timeLeft"
-            binding.timeView.text = "Time: $timeSpent"
+            setTimerText()
 
             //Reenable pause button (gets disabled when you run out of time)
             binding.pause.isEnabled = true
@@ -101,6 +101,11 @@ class MainActivity : AppCompatActivity() {
         this.runOnUiThread(timerTick)
     }
 
+    private fun setTimerText() {
+        //binding.timeView.text = "Time: $timeLeft"
+        binding.timeView.text = "Time: ${DateUtils.formatElapsedTime(timeSpent.toLong())}"
+    }
+
     private val timerTick = Runnable {
         if(game.gameOver) {
             game.running = false
@@ -116,16 +121,15 @@ class MainActivity : AppCompatActivity() {
             if (timerTicks == 1000) {
                 //1 second has passed
                 timerTicks = 0
-
                 timeSpent++
-                binding.timeView.text = "Time: ${DateUtils.formatElapsedTime(timeSpent.toLong())}"
-
-                /*timeLeft--
-                binding.timeView.text = "Time: $timeLeft"*/
+                //timeLeft--
+                setTimerText()
 
                 game.ghostsChangeDirection()
             }
 
+            //Legacy - leaving it for reference
+            //Game used to have a countdown
             /*if (timeLeft == 0) {
                 game.running = false
                 //Display dialog with game over
