@@ -2,34 +2,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_column="2"
     android:orientation="horizontal"
     tools:context="org.pondar.canvasdemokotlin.MainActivity">
-
-    <org.pondar.canvasdemokotlin.GameView
-        android:id="@+id/gameView"
-        android:layout_width="586dp"
-        android:layout_height="match_parent">
-
-    </org.pondar.canvasdemokotlin.GameView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toEndOf="@+id/gameView"
-        android:gravity="bottom"
+        android:layout_alignParentStart="true"
+        android:gravity="start"
+        android:orientation="horizontal">
+
+        <org.pondar.canvasdemokotlin.GameView
+            android:id="@+id/gameView"
+            android:layout_width="587dp"
+            android:layout_height="match_parent">
+
+        </org.pondar.canvasdemokotlin.GameView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="144dip"
+        android:layout_height="fill_parent"
+        android:layout_alignParentEnd="true"
+        android:gravity="bottom|end"
         android:orientation="vertical">
+
+        <Button
+            android:id="@+id/pause"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#DF8602"
+            android:text="@string/pauseBtn"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/newGameBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#673AB7"
+            android:text="@string/newGameBtn"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/pointsView"
-            android:layout_width="144dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
             android:text="Points: 0"
             android:textAlignment="center"
             android:textSize="22sp" />
 
+        <TextView
+            android:id="@+id/levelView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Level: 1"
+            android:textAlignment="center"
+            android:textSize="22sp" />
+
         <TableLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end">
 
@@ -111,6 +144,7 @@
             </TableRow>
 
         </TableLayout>
+
     </LinearLayout>
 
     <!-- Notice how the custom view is referenced here with

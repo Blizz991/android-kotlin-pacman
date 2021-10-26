@@ -33,7 +33,7 @@
             android:id="@+id/pause"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FF9800"
+            android:backgroundTint="#DF8602"
             android:text="@string/pauseBtn"
             android:textColor="#FFFFFF" />
 
@@ -50,6 +50,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Points: 0"
+            android:textAlignment="center"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/levelView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Level: 1"
             android:textAlignment="center"
             android:textSize="22sp" />
 

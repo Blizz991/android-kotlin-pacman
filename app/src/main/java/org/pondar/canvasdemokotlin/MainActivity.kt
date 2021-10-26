@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        game = Game(this, binding.pointsView)
+        game = Game(this, binding.pointsView, binding.levelView)
         game.setGameView(binding.gameView)
         binding.gameView.setGame(game)
         game.newGame()

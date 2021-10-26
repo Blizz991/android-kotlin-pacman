@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import kotlin.math.*
 import java.util.*
 
-class Game(private var context: Context, view: TextView) {
+class Game(private var context: Context, pointsView: TextView, levelView: TextView) {
     var pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
     var pacmanHeight: Int = 32
     var coinBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.coin)
@@ -14,13 +14,17 @@ class Game(private var context: Context, view: TextView) {
     //The coordinates for our dear pacman: (0,0) is the top-left corner
     var pacx = 0
     var pacy = 0
-    private var pointsView: TextView = view
+    private var currLevel: Int = 1
+    private var levelView: TextView = levelView
+
+    private var pointsView: TextView = pointsView
     private var points: Int = 0
     private var controlsWidth: Int = 400
     private lateinit var gameView: GameView
 
     var coinsInitialized = false
     var coins = ArrayList<GoldCoin>()
+    private var coinsToCreate = 10
 
     fun setGameView(view: GameView) {
         this.gameView = view
@@ -28,7 +32,7 @@ class Game(private var context: Context, view: TextView) {
 
     fun initializeGoldCoins() {
         //Initialize gold coins
-        for (i in 0..9) {
+        for (i in 1..coinsToCreate) {
             var randomX = (32..(gameView.w-pacmanHeight-controlsWidth)).random()
             var randomY = (32..(gameView.h-pacmanHeight-controlsWidth)).random()
             coins.add(
@@ -39,7 +43,6 @@ class Game(private var context: Context, view: TextView) {
                 )
             )
         }
-
         coinsInitialized = true
     }
 
@@ -48,11 +51,28 @@ class Game(private var context: Context, view: TextView) {
         pacx = 0
         pacy = 0
         pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
+
+        //Update level
+        currLevel = 1
+        updateLevelText()
+
         //Reset points & coins
         points = 0
-        updatePoints()
+        updatePointsText()
         coins = ArrayList<GoldCoin>()
+        coinsToCreate = 10
         coinsInitialized = false
+
+        //Invalidate game view so everything updates
+        gameView.invalidate()
+    }
+
+    private fun startNextLevel() {
+        coins = ArrayList<GoldCoin>()
+        coinsToCreate += 10
+        coinsInitialized = false
+        currLevel++
+        updateLevelText()
 
         //Invalidate game view so everything updates
         gameView.invalidate()
@@ -103,9 +123,12 @@ class Game(private var context: Context, view: TextView) {
             if (!coin.taken && distance(pacx, pacy, coin.x, coin.y) < (pacmanHeight*2.5)){
                 coin.taken = true
                 points += 10
-                updatePoints()
+                updatePointsText()
             }
         }
+
+        if (coins.all { coin -> coin.taken })
+            startNextLevel()
     }
 
     private fun distance(x1: Int, y1: Int, x2: Int, y2: Int): Double {
@@ -114,7 +137,11 @@ class Game(private var context: Context, view: TextView) {
         )
     }
 
-    private fun updatePoints() {
+    private fun updatePointsText() {
         pointsView.text = "Points: $points"
+    }
+
+    private fun updateLevelText() {
+        levelView.text = "Level: $currLevel"
     }
 }
