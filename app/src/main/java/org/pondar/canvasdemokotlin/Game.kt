@@ -188,17 +188,19 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     }
 
 
-    private fun doCollisionCheck() {
-        for (coin in coins) {
-            if (!coin.taken && distance(pacx, pacy, coin.x, coin.y) < (pacmanSize*2.5)){
-                coin.taken = true
-                points += 1*currLevel
-                updatePointsText()
+    private fun doCollisionCheck(ghostOnly: Boolean = false) {
+        if (!ghostOnly) {
+            for (coin in coins) {
+                if (!coin.taken && distance(pacx, pacy, coin.x, coin.y) < (pacmanSize * 2.5)) {
+                    coin.taken = true
+                    points += 1 * currLevel
+                    updatePointsText()
+                }
             }
-        }
 
-        if (coins.all { coin -> coin.taken }) {
-            startNextLevel()
+            if (coins.all { coin -> coin.taken }) {
+                startNextLevel()
+            }
         }
 
         for(ghost in ghosts) {
@@ -256,7 +258,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
                 }
             }
         }
-
+        doCollisionCheck(true)
         gameView.invalidate()
     }
 
