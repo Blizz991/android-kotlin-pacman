@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorStateListDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -15,7 +16,8 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private var gameTimer: Timer = Timer()
-    private var timeLeft: Int = 120
+    //private var timeLeft: Int = 0
+    private var timeSpent: Int = 0
     var timerTicks: Int = 0
     lateinit var binding : ActivityMainBinding
     private lateinit var game: Game
@@ -57,9 +59,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.newGameBtn.setOnClickListener {
             //Reset timers
-            timeLeft = 60
+            //timeLeft = 120
+            timeSpent = 0
             timerTicks = 0
-            binding.timeView.text = "Time: $timeLeft"
+            //binding.timeView.text = "Time: $timeLeft"
+            binding.timeView.text = "Time: $timeSpent"
 
             //Reenable pause button (gets disabled when you run out of time)
             binding.pause.isEnabled = true
@@ -101,19 +105,22 @@ class MainActivity : AppCompatActivity() {
                 //1 second has passed
                 timerTicks = 0
 
-                timeLeft--
-                binding.timeView.text = "Time: $timeLeft"
+                timeSpent++
+                binding.timeView.text = "Time: ${DateUtils.formatElapsedTime(timeSpent.toLong())}"
+
+                /*timeLeft--
+                binding.timeView.text = "Time: $timeLeft"*/
 
                 game.ghostsChangeDirection()
             }
 
-            if (timeLeft == 0) {
+            /*if (timeLeft == 0) {
                 game.running = false
                 //Display dialog with game over
                 //builder.show()
                 binding.pause.isEnabled = false
                 Toast.makeText(applicationContext, "You got: ${game.points} points!", Toast.LENGTH_LONG).show()
-            }
+            }*/
 
             //We handle direction in the Game class
             game.movePacman(game.pacmanSpeed)

@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import kotlin.math.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Game(private var context: Context, pointsView: TextView, levelView: TextView) {
     var running = false
@@ -18,7 +19,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     var pacy = 0
     var pacCurrDirection = Direction.RIGHT
 
-    var ghostSpeed: Int = 8
+    var ghostSpeed: Int = 4
     var ghostSize: Int = 32
 
     private var currLevel: Int = 1
@@ -100,6 +101,10 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         coins = ArrayList<GoldCoin>()
         coinsToCreate = 10
         coinsInitialized = false
+
+        //Reset ghosts
+        ghosts = ArrayList<Ghost>()
+        ghostsInitialized = false
 
         //Invalidate game view so everything updates
         gameView.invalidate()
