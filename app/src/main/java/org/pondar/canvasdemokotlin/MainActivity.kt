@@ -1,10 +1,13 @@
 package org.pondar.canvasdemokotlin
 
+import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.ColorStateListDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import org.pondar.canvasdemokotlin.databinding.ActivityMainBinding
 import java.util.*
@@ -17,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
     private lateinit var game: Game
 
+    //private val builder = AlertDialog.Builder(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -28,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         binding.gameView.setGame(game)
         game.newGame()
         game.running = true
+
+        //Couldn't get dialog to work, found it pretty confusing
+        //builder.setTitle(R.string.gameOverTitle)?.setMessage("You got: ${game.points} points!")
+        //builder.create()
 
         myTimer.schedule(object: TimerTask() {
             override fun run() {
@@ -51,6 +60,9 @@ class MainActivity : AppCompatActivity() {
             timeLeft = 60
             timerTicks = 0
             binding.timeView.text = "Time: $timeLeft"
+
+            //Reenable pause button (gets disabled when you run out of time)
+            binding.pause.isEnabled = true
 
             //Reset game
             game.newGame()
@@ -96,6 +108,9 @@ class MainActivity : AppCompatActivity() {
             if (timeLeft == 0) {
                 game.running = false
                 //Display dialog with game over
+                //builder.show()
+                binding.pause.isEnabled = false
+                Toast.makeText(applicationContext, "You got: ${game.points} points!", Toast.LENGTH_LONG).show()
             }
 
             //We handle direction in the Game class

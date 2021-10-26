@@ -10,4 +10,5 @@
     <string name="currPoints">0</string>
     <string name="currLevel">0</string>
     <string name="countdown">60</string>
+    <string name="gameOverTitle">Game over</string>
 </resources>

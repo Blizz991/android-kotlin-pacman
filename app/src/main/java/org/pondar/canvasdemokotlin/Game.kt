@@ -22,7 +22,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     private var levelView: TextView = levelView
 
     private var pointsView: TextView = pointsView
-    private var points: Int = 0
+    var points: Int = 0
     private var controlsWidth: Int = 400
     private lateinit var gameView: GameView
 
