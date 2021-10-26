@@ -28,7 +28,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
 
     private var ghostSpeed: Int = 4
     private var ghostSize: Int = 32
-    private var ghostsToCreate = 8
+    private var ghostsToCreate = 2
     var ghostsInitialized = false
     var ghosts = ArrayList<Ghost>()
 
