@@ -10,11 +10,14 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     var pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
     var pacmanHeight: Int = 32
     var coinBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.coin)
-    var coinHeight: Int = 16
+
+    var running = false
+
     //The coordinates for our dear pacman: (0,0) is the top-left corner
     var pacx = 0
     var pacy = 0
     var pacCurrDirection = Direction.RIGHT
+
     private var currLevel: Int = 1
     private var levelView: TextView = levelView
 
@@ -35,7 +38,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         //Initialize gold coins
         for (i in 1..coinsToCreate) {
             var randomX = (32..(gameView.w-pacmanHeight-controlsWidth)).random()
-            var randomY = (32..(gameView.h-pacmanHeight-controlsWidth)).random()
+            var randomY = (32..(gameView.h-pacmanHeight)).random()
             coins.add(
                 GoldCoin(
                     randomX,
@@ -77,6 +80,15 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
 
         //Invalidate game view so everything updates
         gameView.invalidate()
+    }
+
+    fun movePacman(distanceToMove: Int) {
+        when(pacCurrDirection) {
+            Direction.UP -> moveUp(distanceToMove)
+            Direction.RIGHT -> moveRight(distanceToMove)
+            Direction.DOWN -> moveDown(distanceToMove)
+            Direction.LEFT -> moveLeft(distanceToMove)
+        }
     }
 
     fun moveUp(y: Int) {
