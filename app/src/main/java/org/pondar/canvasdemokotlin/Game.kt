@@ -194,7 +194,7 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
         }
 
         for(ghost in ghosts) {
-            if (distance(pacx, pacy, ghost.x, ghost.y) < (pacmanSize*1.5)) {
+            if (distance(pacx, pacy, ghost.x, ghost.y) < (pacmanSize*2)) {
                 running = false
                 gameOver = true
             }
