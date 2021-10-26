@@ -112,7 +112,9 @@ class MainActivity : AppCompatActivity() {
             binding.pause.isEnabled = false
 
             //I wanted to use dialog, but couldn't get it to work
-            Toast.makeText(applicationContext, "You got: ${game.points} points!", Toast.LENGTH_LONG).show()
+            Toast.makeText( applicationContext,
+                        "You got: ${game.points} points!",
+                            Toast.LENGTH_LONG).show()
         }
 
         if (game.running) {
@@ -135,7 +137,9 @@ class MainActivity : AppCompatActivity() {
                 //Display dialog with game over
                 //builder.show()
                 binding.pause.isEnabled = false
-                Toast.makeText(applicationContext, "You got: ${game.points} points!", Toast.LENGTH_LONG).show()
+                Toast.makeText( applicationContext,
+                                "You got: ${game.points} points!",
+                                Toast.LENGTH_LONG).show()
             }*/
 
             //We handle direction in the Game class

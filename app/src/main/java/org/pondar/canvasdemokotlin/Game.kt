@@ -18,10 +18,10 @@ class Game(private var context: Context, pointsView: TextView, levelView: TextVi
     private var controlsWidth: Int = 400
     private lateinit var gameView: GameView
 
-    var pacmanBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
+    var pacmanBitmap: Bitmap = BitmapFactory.decodeResource(context.resources,
+                                                            R.drawable.pacman32_right)
     var pacmanSize: Int = 32
     var pacmanSpeed: Int = 16
-    //The coordinates for our dear pacman: (0,0) is the top-left corner
     var pacx = 0
     var pacy = 0
     var pacCurrDirection = Direction.RIGHT
