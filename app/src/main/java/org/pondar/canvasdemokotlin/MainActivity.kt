@@ -23,7 +23,12 @@ class MainActivity : AppCompatActivity() {
         binding.gameView.setGame(game)
         game.newGame()
 
-        //adding a click listener
+        //adding a click listeners
+
+        binding.newGameBtn?.setOnClickListener {
+            game.newGame()
+        }
+
         binding.moveUpButton.setOnClickListener {
             game.moveUp(16)
         }

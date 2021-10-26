@@ -44,10 +44,18 @@ class Game(private var context: Context, view: TextView) {
     }
 
     fun newGame() {
+        //Reset pacman
         pacx = 0
         pacy = 0
-        coinsInitialized = false
+        pacmanBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pacman32_right)
+        //Reset points & coins
         points = 0
+        updatePoints()
+        coins = ArrayList<GoldCoin>()
+        coinsInitialized = false
+
+        //Invalidate game view so everything updates
+        gameView.invalidate()
     }
 
     fun moveUp(y: Int) {
