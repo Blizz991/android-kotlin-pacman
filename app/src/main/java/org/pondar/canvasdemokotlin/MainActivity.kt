@@ -14,7 +14,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var myTimer: Timer = Timer()
+    private var gameTimer: Timer = Timer()
     var timeLeft: Int = 60
     var timerTicks: Int = 0
     lateinit var binding : ActivityMainBinding
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         //builder.setTitle(R.string.gameOverTitle)?.setMessage("You got: ${game.points} points!")
         //builder.create()
 
-        myTimer.schedule(object: TimerTask() {
+        gameTimer.schedule(object: TimerTask() {
             override fun run() {
                 timerMethod()
             }
